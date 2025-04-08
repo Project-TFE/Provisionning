@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "rg" {
-  name = "Ehealth-rg"
+  name = "EhealthTFE-rg"
   location = "West Europe"
 }
 
@@ -23,8 +23,8 @@ module "network" {
   vnet_name           = "Ehealth_Vnet"
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = ["10.0.0.0/16"]
-  subnet_prefixes     = ["10.0.1.0/24", "10.0.2.0/24"]
-  subnet_names        = ["FrontNet", "BackNet"]
+  subnet_prefixes     = ["10.0.4.0/24", "10.0.5.0/24"]
+  subnet_names        = ["Jenkins", "Sonarqube"]
 
   depends_on = [ azurerm_resource_group.rg ]
 }
@@ -36,31 +36,31 @@ module "nsg" {
   location            = azurerm_resource_group.rg.location
 }
 
-module "nic_front" {
+module "nic_jenk" {
   source              = "./Modules/nic"
-  nic_name            = "nic-front"
+  nic_name            = "nic-jenk"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  subnet_id           = module.network.subnet_ids["FrontNet"]
+  subnet_id           = module.network.subnet_ids["Jenkins"]
   public_ip_address_id = azurerm_public_ip.public_ip.id
 }
 
-module "nic_back" {
+module "nic_sonar" {
   source              = "./Modules/nic"
-  nic_name            = "nic-back"
+  nic_name            = "nic-sonar"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  subnet_id           = module.network.subnet_ids["BackNet"]
+  subnet_id           = module.network.subnet_ids["Sonarqube"]
+  public_ip_address_id = azurerm_public_ip.public_ip.id
 }
 
 
 module "vms" {
   source                = "./Modules/vms"
-  vm_names             = ["EhealthFront", "EhealthBack"]
+  vm_names             = ["EhealthJenk", "EhealthSonar"]
   resource_group_name  = azurerm_resource_group.rg.name
   location             = azurerm_resource_group.rg.location
-  # network_interface_ids = [module.nic.nic_id, module.nic.nic_id]
-  network_interface_ids = [module.nic_front.nic_id, module.nic_back.nic_id]
+  network_interface_ids = [module.nic_jenk.nic_id, module.nic_soanr.nic_id]
   os_disk_names        = ["os_disk_vm1", "os_disk_vm2"]
   admin_username       = "azureuser"
   ssh_public_keys      = [tls_private_key.ssh_1.public_key_openssh, tls_private_key.ssh_2.public_key_openssh]

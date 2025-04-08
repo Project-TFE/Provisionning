@@ -12,12 +12,13 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
     storage_account_type  = "Premium_LRS"
   }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
+ source_image_reference {
+  publisher = "Canonical"
+  offer     = "0001-com-ubuntu-server-jammy"
+  sku       = "22_04-lts"
+  version   = "latest"
+}
+
 
   computer_name          = var.vm_names[count.index]
   admin_username         = var.admin_username
