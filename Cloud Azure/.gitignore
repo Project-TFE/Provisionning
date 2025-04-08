@@ -1,0 +1,29 @@
+# Fichiers Terraform générés
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Clés privées et SSH
+*.pem
+*.key
+*.crt
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+*.bak
+
+# Fichiers de sortie Terraform
+terraform.tfvars
+terraform.tfvars.json
+
+# VS Code settings (si tu utilises VS Code)
+.vscode/
+
+# MacOS & Linux files
+.DS_Store
