@@ -1,0 +1,85 @@
+---
+- name: Install Sonarqube and Prerequisites
+  hosts: sonarqube
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Java 17
+      apt:
+        name: openjdk-17-jdk
+        state: present
+
+    - name: Install PostgreSQL and required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - postgresql
+        - postgresql-contrib
+        - unzip
+
+    - name: Start PostgreSQL service
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Create Sonarqube directory
+      file:
+        path: /opt/sonarqube
+        state: directory
+        mode: '0755'
+
+    - name: Download Sonarqube
+      get_url:
+        url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.2.77730.zip
+        dest: /opt/sonarqube.zip
+        mode: '0644'
+
+    - name: Extract Sonarqube
+      unarchive:
+        src: /opt/sonarqube.zip
+        dest: /opt/
+        remote_src: yes
+
+    - name: Create Sonarqube user
+      user:
+        name: sonar
+        system: yes
+        shell: /bin/bash
+
+    - name: Set ownership of Sonarqube directory
+      file:
+        path: /opt/sonarqube-9.9.2.77730
+        owner: sonar
+        group: sonar
+        recurse: yes
+
+    - name: Create Sonarqube service file
+      copy:
+        dest: /etc/systemd/system/sonarqube.service
+        content: |
+          [Unit]
+          Description=SonarQube service
+          After=syslog.target network.target
+
+          [Service]
+          Type=forking
+          ExecStart=/opt/sonarqube-9.9.2.77730/bin/linux-x86-64/sonar.sh start
+          ExecStop=/opt/sonarqube-9.9.2.77730/bin/linux-x86-64/sonar.sh stop
+          User=sonar
+          Group=sonar
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start Sonarqube service
+      systemd:
+        name: sonarqube
+        state: started
+        enabled: yes
+        daemon_reload: yes

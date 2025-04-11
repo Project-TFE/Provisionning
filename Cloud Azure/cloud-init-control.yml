@@ -1,0 +1,16 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - python3-pip
+  - software-properties-common
+
+runcmd:
+  - pip3 install ansible
+  - mkdir -p /etc/ansible
+  - mkdir -p /opt/ansible/playbooks
+  # - cd /opt/ansible/playbooks
+  # - git clone https://github.com/your-repo/your-ansible-repo.git .
+  # - chmod 600 /home/azureuser/*.pem
+  # - chown azureuser:azureuser /home/azureuser/*.pemr

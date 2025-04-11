@@ -1,0 +1,24 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - openjdk-17-jdk
+  - docker.io
+  - docker-compose
+  - maven
+  - python3-pip
+  - software-properties-common
+
+runcmd:
+  - systemctl start docker
+  - systemctl enable docker
+  - pip3 install ansible
+  - mkdir -p /etc/ansible
+  - mkdir -p /opt/ansible/playbooks
+  - wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+  - echo 'deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/' | tee /etc/apt/sources.list.d/jenkins.list
+  - apt-get update
+  - apt-get install -y jenkins
+  - systemctl start jenkins
+  - systemctl enable jenkins

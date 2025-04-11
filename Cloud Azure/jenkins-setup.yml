@@ -1,0 +1,31 @@
+---
+- name: Jenkins Configuration
+  hosts: localhost
+  become: yes
+  
+  tasks:
+    - name: Install Jenkins Plugins
+      jenkins_plugin:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - maven-plugin
+        - docker-plugin
+        - ansible
+        - pipeline-utility-steps
+
+    - name: Create Jenkins Job Directory
+      file:
+        path: /var/lib/jenkins/jobs/sample-pipeline
+        state: directory
+        owner: jenkins
+        group: jenkins
+
+    - name: Configure Maven
+      copy:
+        dest: /etc/maven/settings.xml
+        content: |
+          <settings>
+            <localRepository>/var/lib/jenkins/.m2/repository</localRepository>
+          </settings>
