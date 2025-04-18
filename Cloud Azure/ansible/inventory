@@ -1,11 +1,6 @@
-[jenkins]
-jenkins_server 
-ansible_host=<jenkins_ip> 
-ansible_user=azureuser 
-ansible_ssh_private_key_file=../jenkins.pem
-
 [sonarqube]
-sonar_server 
-ansible_host=<sonar_ip> 
-ansible_user=azureuser 
-ansible_ssh_private_key_file=../sonar.pem
+EhealthSonar ansible_host=<sonar_ip>
+
+[all:vars]
+ansible_user=azureuser
+ansible_ssh_private_key_file=/var/lib/jenkins/.ssh/id_rsa

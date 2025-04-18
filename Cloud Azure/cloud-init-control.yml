@@ -10,7 +10,8 @@ runcmd:
   - pip3 install ansible
   - mkdir -p /etc/ansible
   - mkdir -p /opt/ansible/playbooks
-  # - cd /opt/ansible/playbooks
-  # - git clone https://github.com/your-repo/your-ansible-repo.git .
-  # - chmod 600 /home/azureuser/*.pem
-  # - chown azureuser:azureuser /home/azureuser/*.pemr
+  - cd /opt/ansible/playbooks
+  - git clone https://github.com/Project-TFE/Playbooks.git .
+  - cd Playbooks/Jenkins
+  - chmod 600 /home/azureuser/*.pem
+  - chown azureuser:azureuser /home/azureuser/*.pem

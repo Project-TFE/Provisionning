@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    
+    environment {
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Project-TFE/Playbooks.git'
+            }
+        }
+        
+        stage('Run Sonarqube Playbook') {
+            steps {
+                sh '''
+                    cd Playbooks/Sonarqube
+                    ansible-playbook sonarqube-install.yml
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Sonarqube installation completed successfully!'
+        }
+        failure {
+            echo 'Sonarqube installation failed!'
+        }
+    }
+}

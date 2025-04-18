@@ -3,7 +3,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   name                = var.vm_names[count.index]
   resource_group_name = var.resource_group_name
   location            = var.location
-  size                = count.index == 0 ? "Standard_B2ms" : "Standard_B1ms"  # 2 CPUs for Jenkins, 1 CPU for others
+  size                = var.vm_size  # Using the specified VM size
   admin_username      = var.admin_username
   custom_data         = var.custom_data[count.index]
   

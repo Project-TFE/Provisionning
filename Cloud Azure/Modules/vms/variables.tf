@@ -22,6 +22,12 @@ variable "admin_username" {
   type = string
 }
 
+variable "vm_size" {
+  description = "The size of the Virtual Machine"
+  type        = string
+  default     = "Standard_B2s"
+}
+
 variable "ssh_public_keys" {
   type = list(string)
 }
